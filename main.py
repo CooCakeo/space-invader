@@ -1,0 +1,27 @@
+import pygame
+# importing the thing cuz it doesnt work if its gone
+pygame.init()
+# pygame initialized
+WIDTH = 700
+HEIGHT = 500
+# game box
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Space Invaders")
+# game loop start 
+clock = pygame.time.Clock()
+# clock
+running = True
+while running:
+    # pygame.event.get is getting events and storing them for later use
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    # tuple: (x, y), (x, y, z)
+    screen.fill((5, 5, 25))
+    # pygame.display updates the screen
+    pygame.display.flip()
+    clock.tick(60)
+    # clock.tick puts the fps of the game to 60
+# game loop ends
+pygame.quit()
+

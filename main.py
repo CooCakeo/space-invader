@@ -17,7 +17,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     # tuple: (x, y), (x, y, z)
-    screen.fill((5, 5, 25))
+    screen.fill((12, 24, 38))
     # pygame.display updates the screen
     pygame.display.flip()
     clock.tick(60)

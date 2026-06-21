@@ -14,7 +14,10 @@ player = pygame.Rect(325, 430, 50, 30)
 player_speed = 5
 running = True
 
-# clock
+player_image = pygame.image.load("assets/alien_spaceship_sprite.png").convert_alpha()
+player_image = pygame.transform.scale(player_image, (100, 80))
+
+# clocko
 while running:
     # pygame.event.get is getting events and storing them for later use
     for event in pygame.event.get():
@@ -25,13 +28,15 @@ while running:
         player.x -= player_speed
     if keys[pygame.K_d]:
         player.x += player_speed
-    if player.left < 0:
-        player.left = 0
-    if player.right > WIDTH:
-        player.right = WIDTH
+
+    player.left = max(player.left, 0)
+    player.right = min(player.right, WIDTH)
+
     # tuple: (x, y), (x, y, z)
     screen.fill((12, 24, 38))
-    pygame.draw.rect(screen, (80, 220, 120), player)
+    # Put this in the draw section 
+    screen.blit(player_image, player)
+
     # pygame.display updates the screen
     pygame.display.flip()
     clock.tick(120)

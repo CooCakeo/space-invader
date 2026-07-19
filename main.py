@@ -22,6 +22,16 @@ running = True
 player_image = pygame.image.load("assets/alien_spaceship_sprite.png").convert_alpha()
 player_image = pygame.transform.scale(player_image, (100, 80))
 
+enemies = []
+for row in range(3):
+    for col in range(8):
+        enemy = pygame.Rect(80 + col * 60, 60 + row * 45, 40, 25)
+        enemies.append(enemy)
+
+enemy_speed = 1
+enemy_direction = 1
+
+
 # clocko
 # game loop start 
 while running:
@@ -29,6 +39,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
 
         # In the event loop
         if event.type == pygame.KEYDOWN:
@@ -44,6 +55,18 @@ while running:
     player.right = min(player.right, WIDTH)
     screen.fill((12, 24, 38))
     
+    move_down = False
+    for enemy in enemies:
+        # equivalent to enemy.x = enemy.x + enemy_speed * enemy_direction
+        enemy.x += enemy_speed * enemy_direction 
+        if enemy.right >= WIDTH or enemy.left <= 0:
+            move_down = True
+    if move_down:
+        enemy_direction *= -1
+        for enemy in enemies:
+            enemy.y += 20
+
+
     # Update bullet
     for bullet in bullets[:]:
         bullet.y -= bullet_speed 
@@ -52,6 +75,9 @@ while running:
     # Draw bullets
     for bullet in bullets:
         pygame.draw.rect(screen, (255, 255, 80), bullet)
+
+    for enemy in enemies:
+        pygame.draw.rect(screen, (220, 80, 80), enemy)
 
     # tuple: (x, y), (x, y, z)
     
@@ -65,4 +91,3 @@ while running:
     # clock.tick puts the fps of the game to 60
 # game loop ends
 pygame.quit()
-

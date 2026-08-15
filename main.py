@@ -31,6 +31,16 @@ for row in range(3):
 enemy_speed = 1
 enemy_direction = 1
 
+score = 0
+font = pygame.font.Font(None, 36)
+
+for bullet in bullets[:]:
+    for enemy in enemies[:]:
+        if bullet.colliderect(enemy):
+            bullets.remove(bullet)
+            enemies.remove(enemy)
+            score += 10
+            break
 
 # clocko
 # game loop start 
@@ -39,7 +49,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
+    
 
         # In the event loop
         if event.type == pygame.KEYDOWN:
@@ -65,8 +75,18 @@ while running:
         enemy_direction *= -1
         for enemy in enemies:
             enemy.y += 20
+    
+    #collision update
+    for bullet in bullets[:]:
+        for enemy in enemies[:]:    
+            if bullet.colliderect(enemy):
+                bullets.remove(bullet)
+                enemies.remove(enemy)
+                score += 10
+                break
 
-
+    score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+    screen.blit(score_text, (10, 10))
     # Update bullet
     for bullet in bullets[:]:
         bullet.y -= bullet_speed 

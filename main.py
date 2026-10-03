@@ -1,5 +1,6 @@
 import pygame
 game_state = "start"
+
 def create_enemies():
     enemies = []
     for row in range(3):
@@ -14,10 +15,7 @@ def reset_game():
     score = 0
     lives = 3
     bullets = []
-    enemies = []
-    for row in range(3):
-        for col in range(8):
-            enemies.append(pygame.Rect(80 + col * 60, 60 + row + 45, 40, 25))
+    enemies = create_enemies()
     game_state = "playing"
 
 # importing the thing cuz it doesnt work if its gone
@@ -44,7 +42,7 @@ player_image = pygame.image.load("assets/alien_spaceship_sprite.png").convert_al
 player_image = pygame.transform.scale(player_image, (100, 80))
 
 
-enemy_speed = 7
+enemy_speed = 2
 enemy_direction = 1
 
 score = 0

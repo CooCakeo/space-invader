@@ -31,6 +31,14 @@ pygame.display.set_caption("Space Invaders")
 bullets = []
 bullet_speed = 7
 
+try: 
+    shoot_sound = pygame.mixer.Sound("assets/sounds/pewness.wav")
+    bgm_sound = pygame.mixer.Sound("assets/sounds/bghehe.mp3")
+except FileNotFoundError: 
+    shoot_sound = None
+
+if bgm_sound:
+    bgm_sound.play()
 
 clock = pygame.time.Clock()
 
@@ -68,6 +76,8 @@ while running:
         # In the event loop
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and game_state == "playing":
+                if shoot_sound:
+                    shoot_sound.play()
                 bullet = pygame.Rect(player.centerx -3, player.top, 6, 15) 
                 bullets.append(bullet)
             if event.key == pygame.K_RETURN:

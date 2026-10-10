@@ -34,6 +34,8 @@ bullet_speed = 7
 try: 
     shoot_sound = pygame.mixer.Sound("assets/sounds/pewness.wav")
     bgm_sound = pygame.mixer.Sound("assets/sounds/bghehe.mp3")
+    death_sound = pygame.mixer.Sound("assets/sounds/death.mp3")
+    enemy_death = pygame.mixer.Sound("assets/sounds/enemy-death.mp3")
 except FileNotFoundError: 
     shoot_sound = None
 
@@ -48,7 +50,11 @@ running = True
 
 player_image = pygame.image.load("assets/alien_spaceship_sprite.png").convert_alpha()
 player_image = pygame.transform.scale(player_image, (100, 80))
-
+enemy_image = pygame.image.load("assets/enemy.png").convert_alpha()
+enemy_image = pygame.transform.scale(enemy_image, (50, 50))
+beam_image = pygame.image.load("assets/beam.png").convert_alpha()
+beam_image = pygame.transform.scale(beam_image, (13, 100))
+title_image = pygame.image.load("assets/titlescreen.png").convert_alpha()
 
 enemy_speed = 2
 enemy_direction = 1
@@ -111,6 +117,8 @@ while running:
         for bullet in bullets[:]:
             for enemy in enemies[:]:    
                 if bullet.colliderect(enemy):
+                    if enemy_death:
+                        enemy_death.play()
                     bullets.remove(bullet)
                     enemies.remove(enemy)
                     score += 10
@@ -131,13 +139,15 @@ while running:
     lives_text = font.render(f"Lives: {lives}", True, (255, 255, 255))
     screen.blit(lives_text, (560, 10))
     if game_state == "game_over":
+        if death_sound:
+            death_sound.play()
         text = font.render("GAME OVER", True, (255, 80, 80))
         screen.blit(text, (270, 230))
 
     if game_state == "start":
         screen.fill((5, 5, 25,))
         title = font.render("SPACE INVADERS" , True, (255, 255, 255))
-        screen.blit(title, (230, 200))
+        screen.blit(title, title_image)
 
     score_text = font.render(f"Score: {score}", True, (255, 255, 255))
     screen.blit(score_text, (10, 10))
@@ -148,15 +158,18 @@ while running:
             bullets.remove(bullet)
     # Draw bullets
     for bullet in bullets:
-        pygame.draw.rect(screen, (255, 255, 80), bullet)
+        # pygame.draw.rect(screen, (255, 255, 80), bullet)
+        screen.blit(beam_image, bullet)
     if game_state == "playing":
         for enemy in enemies:
-            pygame.draw.rect(screen, (220, 80, 80), enemy)
+            # pygame.draw.rect(screen, (220, 80, 80), enemy)
+            screen.blit(enemy_image, enemy)
 
     # tuple: (x, y), (x, y, z)
     
     # Put this in the draw section 
     screen.blit(player_image, player)
+   
     # pygame.draw.rect(screen, (255, 255, 80), player)
 
     # pygame.display updates the screen

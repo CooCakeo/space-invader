@@ -10,13 +10,24 @@ def create_enemies():
 
     return enemies
 
+def create_beefier_enemies():
+    enemies = []
+    for i in range(3):
+        for row in range(3):
+            for col in range(3):
+                enemy = pygame.Rect(80 + col * 60, 60 + row * 45, 40, 25)
+                enemies.append(enemy)
+    return enemies
+
+
 def reset_game():
-    global score, lives, bullets, enemies, game_state
+    global score, lives, bullets, enemies, game_state, level
     score = 0
     lives = 3
     bullets = []
     enemies = create_enemies()
     game_state = "playing"
+    level = 1
 
 # importing the thing cuz it doesnt work if its gone
 pygame.init()
@@ -30,6 +41,8 @@ pygame.display.set_caption("Space Invaders")
 # before the game loop
 bullets = []
 bullet_speed = 7
+
+level = 1
 
 try: 
     shoot_sound = pygame.mixer.Sound("assets/sounds/pewness.wav")
@@ -55,8 +68,9 @@ enemy_image = pygame.transform.scale(enemy_image, (50, 50))
 beam_image = pygame.image.load("assets/beam.png").convert_alpha()
 beam_image = pygame.transform.scale(beam_image, (13, 100))
 title_image = pygame.image.load("assets/titlescreen.png").convert_alpha()
+title_image = pygame.transform.scale(title_image, (500, 500))
 
-enemy_speed = 2
+enemy_speed = 2 * level
 enemy_direction = 1
 
 score = 0
@@ -72,7 +86,7 @@ for bullet in bullets[:]:
 lives = 3
 
 # clocko
-# START OF GAME LOOP
+# START OF GAME LOOP 
 while running:
    # START OF EVENT LOOP
     for event in pygame.event.get():
@@ -80,6 +94,13 @@ while running:
             running = False
 
         # In the event loop
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if game_state == "playing":
+                if shoot_sound:
+                    shoot_sound.play()
+                bullet = pygame.Rect(player.centerx -3, player.top, 6, 15) 
+                bullets.append(bullet)
+                
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and game_state == "playing":
                 if shoot_sound:
@@ -146,11 +167,13 @@ while running:
 
     if game_state == "start":
         screen.fill((5, 5, 25,))
-        title = font.render("SPACE INVADERS" , True, (255, 255, 255))
-        screen.blit(title, title_image)
+        # title = font.render("SPACE INVADERS" , True, (255, 255, 255))
+        screen.blit(title_image, (100, 0))
 
     score_text = font.render(f"Score: {score}", True, (255, 255, 255))
     screen.blit(score_text, (10, 10))
+    level_text = font.render(f"Level: {level}", True, (255, 255, 255))
+    screen.blit(level_text, (10, 40))
     # Update bullet
     for bullet in bullets[:]:
         bullet.y -= bullet_speed 
@@ -164,7 +187,15 @@ while running:
         for enemy in enemies:
             # pygame.draw.rect(screen, (220, 80, 80), enemy)
             screen.blit(enemy_image, enemy)
-
+        if len(enemies) == 0:
+            level += 1
+            # adjust enemy speed to suit difficulty
+            enemy_speed = enemy_speed * level / 3
+            if level >= 5:
+                enemies = create_beefier_enemies() 
+            else:
+                enemies = create_enemies()
+    
     # tuple: (x, y), (x, y, z)
     
     # Put this in the draw section 
